@@ -1,0 +1,42 @@
+GET http://localhost:3000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDA3MTgwMjIsImV4cCI6MTYwMDgwNDQyMiwiYXVkIjoiNWY2OTAzOWJjNmQ1YjQwYjQ4YWYzMTUxIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.Wp7QlCV2mcSt1HyJOCtGBGnR-pq9CfWsRBbGvkg-WlU
+
+
+
+
+### register route
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "email": "mhj42@gmail.com",
+    "password": "123546"
+}
+
+
+### login route
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "mhj42@gmail.com",
+    "password": "123546"
+}
+
+
+###refresh token
+POST http://localhost:3000/auth/refresh-token
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDA3MTc3ODAsImV4cCI6MTYzMjI3NTM4MCwiYXVkIjoiNWY2OTAzOWJjNmQ1YjQwYjQ4YWYzMTUxIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.WVRVF3p8xgD3SRnVBUJgVlMhUsMtp7rBkR4ADYGDqlc"
+}
+
+
+###logout rout
+DELETE  http://localhost:3000/auth/logout
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDA3MTc4MDEsImV4cCI6MTYzMjI3NTQwMSwiYXVkIjoiNWY2OTAzOWJjNmQ1YjQwYjQ4YWYzMTUxIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.YxXzXLZ67vSmmiNvOl8Qu6zRY_rFcvu5anIhuHmxQeA"
+}
