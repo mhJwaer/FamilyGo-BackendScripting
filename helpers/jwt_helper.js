@@ -1,6 +1,6 @@
 const JWT = require('jsonwebtoken')
 const createError = require('http-errors')
-const client = require('./init_redis')
+// const client = require('./init_redis')
 
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
             const payload = {}
             const secret = process.env.ACCESS_TOKEN_SECRET
             const options = {
-                expiresIn: '1d',
+                expiresIn: '7d',
                 issuer: 'mh.jwaer@gmail.com',
                 audience: userId
             }
@@ -54,6 +54,7 @@ module.exports = {
                     console.error(err);
                     return reject(createError.InternalServerError())
                 }
+                return resolve(token)
                 // client.SET(userId, token, 'EX', 365 * 24 * 60 * 60, (err, reply) => {
                 //     if (err) {
                 //         console.log(err.message)
