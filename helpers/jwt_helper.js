@@ -54,13 +54,13 @@ module.exports = {
                     console.error(err);
                     return reject(createError.InternalServerError())
                 }
-                client.SET(userId, token, 'EX', 365 * 24 * 60 * 60, (err, reply) => {
-                    if (err) {
-                        console.log(err.message)
-                        return reject(createError.InternalServerError())
-                    }
-                    resolve(token)
-                })
+                // client.SET(userId, token, 'EX', 365 * 24 * 60 * 60, (err, reply) => {
+                //     if (err) {
+                //         console.log(err.message)
+                //         return reject(createError.InternalServerError())
+                //     }
+                //     resolve(token)
+                // })
             })
         })
     },
@@ -70,19 +70,20 @@ module.exports = {
             JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
                 if (err) return reject(createError.Unauthorized())
                 const userId = payload.aud
-                client.GET(userId, (err, result) => {
-                    console.log(result);
-                    if (err) {
-                        console.log(err.message)
-                        reject(createError.InternalServerError())
-                        return
-                    }
-                    if (refreshToken === result) {
-                        resolve(userId)
-                        return
-                    }
-                    reject(createError.Unauthorized())
-                })
+                return resolve(userId)
+                // client.GET(userId, (err, result) => {
+                //     console.log(result);
+                //     if (err) {
+                //         console.log(err.message)
+                //         reject(createError.InternalServerError())
+                //         return
+                //     }
+                //     if (refreshToken === result) {
+                //         resolve(userId)
+                //         return
+                //     }
+                //     reject(createError.Unauthorized())
+                // })
             })
         })
     },
