@@ -1,5 +1,7 @@
 const createError = require('http-errors')
+const AuthUser = require('../Models/Auth.User.Model')
 const User = require('../Models/User.model')
+const na = "N/A"
 const {
     response
 } = require('express')
@@ -12,7 +14,7 @@ const {
     verifyRefreshToken
 } = require('../helpers/jwt_helper')
 
-const client = require('../helpers/init_redis')
+// const client = require('../helpers/init_redis')
 
 
 module.exports = {
@@ -20,16 +22,33 @@ module.exports = {
 
         try {
             const result = await authSchema.validateAsync(req.body)
-            const doesExist = await User.findOne({
+            const doesExist = await AuthUser.findOne({
                 email: result.email
             })
             if (doesExist) throw createError.Conflict(`${result.email} is already been registered`)
 
-            const user = new User(result)
-            const savedUser = await user.save();
+            const authUser = new AuthUser(result)
+            
 
-            const accessToken = await signAccessToken(savedUser.id)
-            const refreshToken = await signRefreshToken(savedUser.id)
+
+            const savedAuthUser = await authUser.save();
+
+            const user = new User({
+                _id: savedAuthUser.id,
+                circle: na,
+                name: na,
+                email: savedAuthUser.email,
+                messageToken: na,
+                photoUrl: na,
+                isAdmin: false,
+                isSharing: false
+            })
+            const savedUser = await user.save();
+            console.log(`savedUser = ${savedUser}`);
+            
+
+            const accessToken = await signAccessToken(savedAuthUser.id)
+            const refreshToken = await signRefreshToken(savedAuthUser.id)
 
 
             return res.send({
@@ -48,7 +67,7 @@ module.exports = {
     login: async (req, res, next) => {
         try {
             const result = await authSchema.validateAsync(req.body)
-            const user = await User.findOne({
+            const user = await AuthUser.findOne({
                 email: result.email
             })
 
@@ -97,14 +116,15 @@ module.exports = {
             } = req.body
             if (!refreshToken) throw createError.BadRequest()
             const userId = await verifyRefreshToken(refreshToken)
-            client.DEL(userId, (err, val) => {
-                if (err) {
-                    console.log(err.message)
-                    throw createError.InternalServerError()
-                }
-                console.log(val)
-                res.sendStatus(204)
-            })
+            // client.DEL(userId, (err, val) => {
+            //     if (err) {
+            //         console.log(err.message)
+            //         throw createError.InternalServerError()
+            //     }
+            //     console.log(val)
+            //     res.sendStatus(204)
+            // })
+            return res.sendStatus(204)
 
         } catch (error) {
             next(error)

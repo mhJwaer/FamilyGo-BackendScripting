@@ -13,12 +13,17 @@ app.use(morgan('dev'))
 app.use(express.json())
 const PORT = process.env.PORT || 3000
 const authRoute = require('./Routes/Auth.route')
+const circleRoute = require('./Routes/Circle.route')
+const userRoute = require('./Routes/User.route')
+// const bodyParser = require('body-parser')
 
-
+// app.use(bodyParser)
 app.use('/auth', authRoute)
-app.get('/', verifyAccessToken, (req, res) => {
-    // res.send('helllo from express :)')
-    res.send(req.payload)
+app.use('/circle', circleRoute)
+app.use('/user', userRoute)
+app.get('/', (req, res) => {
+    res.send('helllo from express :)')
+    // res.send(req.payload)
     // res.send(req.headers['authorization'])
 })
 

@@ -9,7 +9,7 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "email": "mhj42@gmail.com",
+    "email": "mhj2@gmail.com",
     "password": "123546"
 }
 
@@ -19,7 +19,7 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "mhj42@gmail.com",
+    "email": "mhj2@gmail.com",
     "password": "123546"
 }
 
@@ -40,3 +40,27 @@ Content-Type: application/json
 {
     "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDA3MTc4MDEsImV4cCI6MTYzMjI3NTQwMSwiYXVkIjoiNWY2OTAzOWJjNmQ1YjQwYjQ4YWYzMTUxIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.YxXzXLZ67vSmmiNvOl8Qu6zRY_rFcvu5anIhuHmxQeA"
 }
+
+
+###Create Circle
+GET http://localhost:3000/circle/create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI2ODYwOTIsImV4cCI6MTYwMzI5MDg5MiwiYXVkIjoiNWY4NzBjOGM1N2NhMDUwOTEwZmUyZjUwIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.sTmYcZlQl3PM-QtFlN25XdDWxTMdIJUM2Fzf9nMkzTo
+
+
+
+###Join Circle
+POST http://localhost:3000/circle/join/XAHKUZ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3MDU1OTUsImV4cCI6MTYwMzMxMDM5NSwiYXVkIjoiNWY4NzU4YjZkMmQ4MWMzMDg0YjIwZjk1IiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.pCbm7M5TtM3OG8AWPxWrPeDNdh-fZFTDDdZ6_U9vLQo
+
+
+
+
+###save user name
+POST http://localhost:3000/user/save-username/Mohmmed Hassan
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3MDU1OTUsImV4cCI6MTYwMzMxMDM5NSwiYXVkIjoiNWY4NzU4YjZkMmQ4MWMzMDg0YjIwZjk1IiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.pCbm7M5TtM3OG8AWPxWrPeDNdh-fZFTDDdZ6_U9vLQo
+
+
+
+###get User Detailes
+GET http://localhost:3000/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3MDU1OTUsImV4cCI6MTYwMzMxMDM5NSwiYXVkIjoiNWY4NzU4YjZkMmQ4MWMzMDg0YjIwZjk1IiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.pCbm7M5TtM3OG8AWPxWrPeDNdh-fZFTDDdZ6_U9vLQo

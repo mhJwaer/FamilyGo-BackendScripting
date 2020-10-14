@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-mongoose.connect(process.env.MONGODB_URI, {
-        // dbName: process.env.DB_NAME,
+mongoose.connect('mongodb://localhost:27017' || process.env.MONGODB_URI, {
+        dbName: "Family-Go-DB",
         useUnifiedTopology: true,
         useNewUrlParser: true
     })
@@ -26,6 +26,7 @@ mongoose.connection.on('error', (err) => {
 mongoose.connection.on('disconnected', () => {
     console.log('mongodb is disconnected');
 })
+
 
 process.on('SIGINT', async () => {
     await mongoose.connection.close();
