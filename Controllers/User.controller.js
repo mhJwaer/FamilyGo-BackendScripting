@@ -1,6 +1,8 @@
 const createError = require('http-errors')
 const User = require('../Models/User.model')
 const Circle = require('../Models/Circle.model')
+const UserLocation = require('../Models/UserLocation.model')
+const { findByIdAndUpdate } = require('../Models/User.model')
 const na = 'N/A'
 // const {
 //     saveUserNameSchema
@@ -72,8 +74,77 @@ module.exports = {
         }
     },
 
-    updateAvatar: async (req, res, next) => {
-        
+    updateAvatar: async (req, res, next) => {  
     },
+
+    updateMessageToken: async (req, res, next) => {
+        try {
+            const userId = req.payload.aud
+            const messageToken = req.body.messageToken
+            if (!messageToken) throw createError.BadRequest('No messaging Token!')
+        
+            const user = await User.findOne({ _id: userId })
+            if (!user) throw createError.NotFound()
+        
+
+            if (user.circle !== na) {
+                let newCircleMembers = []
+                const userCircle = await Circle.findOne({ circle_code: user.circle })
+                if (userCircle) {
+                    userCircle.members.forEach(member => {
+                        if (member._id !== userId)
+                            newCircleMembers.push(member)
+                    })
+
+                    const userObj = {
+                        _id: user.id,
+                        email: user.email,
+                        name: user.name,
+                        circle: user.circle,
+                        isAdmin: user.isAdmin,
+                        isSharing: user.isSharing,
+                        photoUrl: user.photoUrl,
+                        messageToken: messageToken
+                    }
+                    newCircleMembers.push(userObj)
+                    await Circle.findByIdAndUpdate(userCircle.id, {members: newCircleMembers})
+
+                }
+            }
+
+            await User.findByIdAndUpdate(userId, { messageToken: messageToken })
+            res.send({
+                isSharing: true,
+                message: 'Token Updated Successfully'
+            })
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    setUserLocation: async (req, res, next) => {
+        try {
+            const userId = req.payload.aud
+            const { latitude, longitude } = req.body
+            if(!latitude || !longitude) throw createError.BadRequest('Bad or Incompleted Entity')
+            var ts = Math.round((new Date()).getTime() / 1000)
+
+            const location = {
+                latitude: latitude,
+                longitude: longitude,
+                timestamp: ts
+            }
+
+            await UserLocation.update({ _id: userId }, { $push: { locationStack: location } })
+            
+            res.send({
+                isSuccessfull: true,
+                message: 'Location updated Successfully'
+            })
+
+        } catch (error) {
+            next(error)
+        }
+    }
 
 }

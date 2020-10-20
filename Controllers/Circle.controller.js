@@ -4,6 +4,9 @@ const {
 const User = require('../Models/User.model')
 const createError = require('http-errors')
 const Circle = require('../Models/Circle.model')
+const UserLocation = require('../Models/UserLocation.model')
+const mongoose = require('mongoose')
+
 const na = 'N/A'
 
 module.exports = {
@@ -50,6 +53,8 @@ module.exports = {
                 isAdmin: true,
                 isSharing: userDoc.isSharing,
                 photoUrl: userDoc.photoUrl,
+                messageToken: userDoc.messageToken,
+
             }
 
 
@@ -127,11 +132,12 @@ module.exports = {
             await User.findByIdAndUpdate(userId, { circle: code, isAdmin: false })
             
             const userObj = {
-                _id: user.id,
+                _id: user._id,
                 email: user.email,
                 name: user.name,
                 circle: code,
                 isAdmin: false,
+                messageToken: user.messageToken,
                 isSharing: user.isSharing,
                 photoUrl: user.photoUrl,
             }
@@ -144,6 +150,161 @@ module.exports = {
                 message: 'circle joined successfully'
             })
 
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    getCircleMembers: async (req, res, next) => {
+        try {
+            const userId = req.payload.aud
+            const user = await User.findOne({ _id: userId })
+            if (!user) throw createError.NotFound()
+            
+            if (user.circle === na) throw createError.BadRequest('User Not Joined a Circle')
+            
+            const circle = await Circle.findOne({ circle_code: user.circle })
+            if (!circle) throw createError.NotFound()
+
+            const members = circle.members
+            res.send(members)
+
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    getCircleMembersLocations: async (req, res, next) => {
+        try {
+            const userId = req.payload.aud
+            //query user doc
+            const user = await User.findOne({ _id: userId })
+            if (!user) throw createError.NotFound();
+            if (user.circle === na) throw createError.BadRequest("user doesn't joined a circle")
+            
+            //query circle members
+            const circle = await Circle.findOne({ circle_code: user.circle })
+            if (!circle) throw createError.NotFound()
+            
+
+            let memLocRes = []
+            let count = 0
+            await new Promise((resolve, reject) => {
+                circle.members.forEach(async member => {
+                    try {
+                        if (member.isSharing) {
+                            const memberLastLoc = await UserLocation.aggregate([
+                                {
+                                    $match : {   _id: mongoose.Types.ObjectId(member._id) }
+                                },
+                                {
+                                    $unwind: "$locationStack"
+                                },
+                       
+                                {
+                                    $sort: {"locationStack.timestamp": -1}
+                                },
+                                {
+                                    $limit: 1
+                                },
+                                {
+                                    $group: {
+                                        _id: "$_id",
+                                        latitude: { $first: "$locationStack.latitude" },
+                                        longitude: { $first: "$locationStack.longitude" },
+                                        timestamp: { $first: "$locationStack.timestamp" }
+                                    }
+                                }
+                            ])
+                            memLocRes.push(memberLastLoc[0])
+                        } else {
+                            const memberLastLoc = {
+                                _id: member._id,
+                                latitude: '0',
+                                longitude: '0',
+                                timestamp: Math.round((new Date()).getTime() /1000)
+                            }
+                            memLocRes.push(memberLastLoc)
+                        }
+                        
+                    } catch (error) {
+                        throw error
+                    } finally {
+                        count += 1
+                        if (count === circle.members.length)
+                            resolve()
+                    }
+                    
+                })
+            })
+            res.send(memLocRes)
+            
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    changeCircleAdmin: async (req, res, next) => {
+        try {
+            const oldAdminId = req.payload.aud
+
+            const newAdminId = req.params.targetUserId
+            if(!newAdminId) createError.BadRequest()
+
+            const oldAdminDoc = await User.findOne({ _id: oldAdminId })
+            if (!oldAdminDoc) throw createError.NotFound()
+            const newAdminDoc = await User.findOne({ _id: newAdminId })
+            if (!newAdminDoc) throw createError.NotFound()
+            
+            if (oldAdminDoc.circle !== newAdminDoc.circle) throw createError.Unauthorized()
+            
+         
+            const oldAdminObj = {
+                _id: oldAdminDoc._id,
+                email: oldAdminDoc.email,
+                name: oldAdminDoc.name,
+                circle: oldAdminDoc.circle,
+                isAdmin: false,
+                isSharing: oldAdminDoc.isSharing,
+                photoUrl: oldAdminDoc.photoUrl,
+                messageToken: oldAdminDoc.messageToken
+            }
+            const newAdminObj = {
+                _id: newAdminDoc._id,
+                email: newAdminDoc.email,
+                name: newAdminDoc.name,
+                circle: newAdminDoc.circle,
+                isAdmin: true,
+                isSharing: newAdminDoc.isSharing,
+                photoUrl: newAdminDoc.photoUrl,
+                messageToken: newAdminDoc.messageToken
+            }
+
+            let membersArray = []
+            membersArray.push(oldAdminObj)
+            membersArray.push(newAdminObj)
+
+
+            const circle = await Circle.findOne({ circle_code: oldAdminDoc.circle })
+            console.log(circle);
+            circle.members.forEach(member => {
+                var result = new Object()
+                result.userId = member._id
+                if (result.userId.equals(oldAdminDoc._id)) return
+                if (result.userId.equals(newAdminDoc._id)) return
+                membersArray.push(member)
+            })
+
+            await Circle.findOneAndUpdate({_id: circle._id}, { members: membersArray })
+
+            await User.findByIdAndUpdate(newAdminId, { isAdmin: true })
+            await User.findByIdAndUpdate(oldAdminId, { isAdmin: false })
+            await Circle.findOneAndUpdate({ circle_code: oldAdminDoc.circle }, { admin_id: newAdminId })
+
+            res.send({
+                isSuccessfull: true,
+                message: 'Circle Adm cin successfully updated'
+            })
         } catch (error) {
             next(error)
         }

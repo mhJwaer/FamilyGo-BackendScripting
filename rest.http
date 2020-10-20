@@ -9,7 +9,7 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "email": "mhj2@gmail.com",
+    "email": "mhj4@gmail.com",
     "password": "123546"
 }
 
@@ -44,23 +44,69 @@ Content-Type: application/json
 
 ###Create Circle
 GET http://localhost:3000/circle/create
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI2ODYwOTIsImV4cCI6MTYwMzI5MDg5MiwiYXVkIjoiNWY4NzBjOGM1N2NhMDUwOTEwZmUyZjUwIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.sTmYcZlQl3PM-QtFlN25XdDWxTMdIJUM2Fzf9nMkzTo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3NTY1ODMsImV4cCI6MTYwMzM2MTM4MywiYXVkIjoiNWY4ODFmZTYwOWY5NzMxYzU0Y2MxMmVmIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.7AHiwS0QnYjWzI22kVi82-4lutDjdDUZW2xa8B3tXYM
 
 
 
 ###Join Circle
-POST http://localhost:3000/circle/join/XAHKUZ
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3MDU1OTUsImV4cCI6MTYwMzMxMDM5NSwiYXVkIjoiNWY4NzU4YjZkMmQ4MWMzMDg0YjIwZjk1IiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.pCbm7M5TtM3OG8AWPxWrPeDNdh-fZFTDDdZ6_U9vLQo
+POST http://localhost:3000/circle/join/VEMOGT
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3NTY1NTAsImV4cCI6MTYwMzM2MTM1MCwiYXVkIjoiNWY4ODFmYzYwOWY5NzMxYzU0Y2MxMmVlIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.lT8WA0BidJsAlDEhyvkWO-3Zz-VBZ9YpKSkoqEN9ht0
 
 
 
 
 ###save user name
-POST http://localhost:3000/user/save-username/Mohmmed Hassan
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3MDU1OTUsImV4cCI6MTYwMzMxMDM5NSwiYXVkIjoiNWY4NzU4YjZkMmQ4MWMzMDg0YjIwZjk1IiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.pCbm7M5TtM3OG8AWPxWrPeDNdh-fZFTDDdZ6_U9vLQo
+POST http://localhost:3000/user/save-username/Jwaer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3NTY1ODMsImV4cCI6MTYwMzM2MTM4MywiYXVkIjoiNWY4ODFmZTYwOWY5NzMxYzU0Y2MxMmVmIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.7AHiwS0QnYjWzI22kVi82-4lutDjdDUZW2xa8B3tXYM
 
 
 
 ###get User Detailes
 GET http://localhost:3000/user
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3MDU1OTUsImV4cCI6MTYwMzMxMDM5NSwiYXVkIjoiNWY4NzU4YjZkMmQ4MWMzMDg0YjIwZjk1IiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.pCbm7M5TtM3OG8AWPxWrPeDNdh-fZFTDDdZ6_U9vLQo
+
+
+###update message token
+POST http://localhost:3000/user/message-token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI2ODYwOTIsImV4cCI6MTYwMzI5MDg5MiwiYXVkIjoiNWY4NzBjOGM1N2NhMDUwOTEwZmUyZjUwIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.sTmYcZlQl3PM-QtFlN25XdDWxTMdIJUM2Fzf9nMkzTo
+Content-Type: application/json
+
+{
+    "messageToken": "euKLJSAOas9SDKA98ASKJdjkajsCIV8AQWdsdlkfASASKJFMDlSOKJOSMAS1SLKLKSAD0ISLASLKD8KSkJKDJMnkdLLSJOIOskajdmIKSNS90ASmdKASJHFNANSKASJKSMdkDKFJMKFNFNMZLKJMFLKJAZXMJKLFJXZMFLKASASKFLK<LSKKDLK<DSKIKDospjdpAKKakJkJAjJAKj"
+}
+
+
+### get circle members
+GET  http://localhost:3000/circle/members
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3NTY1NTAsImV4cCI6MTYwMzM2MTM1MCwiYXVkIjoiNWY4ODFmYzYwOWY5NzMxYzU0Y2MxMmVlIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.lT8WA0BidJsAlDEhyvkWO-3Zz-VBZ9YpKSkoqEN9ht0
+
+
+### set user location
+POST http://localhost:3000/user/location
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3NTY1ODMsImV4cCI6MTYwMzM2MTM4MywiYXVkIjoiNWY4ODFmZTYwOWY5NzMxYzU0Y2MxMmVmIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.7AHiwS0QnYjWzI22kVi82-4lutDjdDUZW2xa8B3tXYM
+Content-Type: application/json
+
+{
+    "latitude": "123123123",
+    "longitude": "123123123"
+}
+
+
+### get circle members locations
+GET http://localhost:3000/circle/members-locations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3NTY1NTAsImV4cCI6MTYwMzM2MTM1MCwiYXVkIjoiNWY4ODFmYzYwOWY5NzMxYzU0Y2MxMmVlIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.lT8WA0BidJsAlDEhyvkWO-3Zz-VBZ9YpKSkoqEN9ht0
+
+
+### change circle admin
+PATCH hhtp://localhost:300/circle/admin/5f881fc609f9731c54cc12ee
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3NTY1ODMsImV4cCI6MTYwMzM2MTM4MywiYXVkIjoiNWY4ODFmZTYwOWY5NzMxYzU0Y2MxMmVmIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.7AHiwS0QnYjWzI22kVi82-4lutDjdDUZW2xa8B3tXYM
+
+
+
+
+###mhj2
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3NTY1NTAsImV4cCI6MTYwMzM2MTM1MCwiYXVkIjoiNWY4ODFmYzYwOWY5NzMxYzU0Y2MxMmVlIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.lT8WA0BidJsAlDEhyvkWO-3Zz-VBZ9YpKSkoqEN9ht0
+
+
+###mhj1
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDI3NTY1ODMsImV4cCI6MTYwMzM2MTM4MywiYXVkIjoiNWY4ODFmZTYwOWY5NzMxYzU0Y2MxMmVmIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.7AHiwS0QnYjWzI22kVi82-4lutDjdDUZW2xa8B3tXYM

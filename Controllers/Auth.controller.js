@@ -1,10 +1,9 @@
 const createError = require('http-errors')
 const AuthUser = require('../Models/Auth.User.Model')
 const User = require('../Models/User.model')
+const UserLocation = require('../Models/UserLocation.model')
+
 const na = "N/A"
-const {
-    response
-} = require('express')
 const {
     authSchema
 } = require('../helpers/validation_schema')
@@ -43,8 +42,13 @@ module.exports = {
                 isAdmin: false,
                 isSharing: false
             })
-            const savedUser = await user.save();
-            console.log(`savedUser = ${savedUser}`);
+            await user.save();
+            
+            const userLocation = new UserLocation({
+                _id: savedAuthUser.id,
+                locationStack: []
+            })
+            await userLocation.save();
             
 
             const accessToken = await signAccessToken(savedAuthUser.id)
