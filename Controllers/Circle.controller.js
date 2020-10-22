@@ -6,6 +6,7 @@ const createError = require('http-errors')
 const Circle = require('../Models/Circle.model')
 const UserLocation = require('../Models/UserLocation.model')
 const mongoose = require('mongoose')
+const e = require('express')
 
 const na = 'N/A'
 
@@ -46,7 +47,7 @@ module.exports = {
 
             const code = randCircleCode()
             const userDocObj = {
-                _id: userDoc.id,
+                _id: userDoc._id,
                 email: userDoc.email,
                 name: userDoc.name,
                 circle: code,
@@ -216,7 +217,9 @@ module.exports = {
                                     }
                                 }
                             ])
-                            memLocRes.push(memberLastLoc[0])
+                            if(memberLastLoc[0] !== undefined)
+                                memLocRes.push(memberLastLoc[0])
+                            
                         } else {
                             const memberLastLoc = {
                                 _id: member._id,
@@ -239,6 +242,55 @@ module.exports = {
             })
             res.send(memLocRes)
             
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    leaveCircle: async (req, res, next) => {
+        try {
+            const userId = req.payload.aud
+
+            //getting user document
+            const user = await User.findOne({ _id: userId })
+            if (!user) throw createError.NotFound('User Not Found!')
+
+            //check if user has not a circle
+            if (user.circle === na) throw createError.BadRequest()
+            
+            //download the circle
+            const circle = await Circle.findOne({ circle_code: user.circle })
+            
+            if (!circle) throw createError.BadRequest()
+
+            //if request is came from admin
+            if (user.isAdmin) {
+                //check if the user admin is the only one in the circle
+                if (circle.members.length > 1) throw createError.BadRequest("you can't leave the circle while you are an admin")
+                else {
+                    //the admin is the only one then delete the entire circle
+                    await Circle.findOneAndDelete({ _id: circle._id })
+                    await User.findOneAndUpdate({ _id: user._id }, { circle: na, isAdmin: false })
+                }
+            }
+            else {
+                //user is not the circle admin -> delete the only user from the circle memers
+                let newCircleMembers = []
+                circle.members.forEach(member => {
+                    var result = new Object()
+                    result.userId = member._id
+                    if (result.userId.equals(user._id)) return
+                    newCircleMembers.push(member)
+                })
+
+                await Circle.findOneAndUpdate({ _id: circle._id }, { members: newCircleMembers })
+                await User.findOneAndUpdate({ _id: user._id }, { circle: na, isAdmin: false })
+            }
+            res.send({
+                isSuccessfull: true,
+                message:'you leaved the circle successfully'
+            })
+
         } catch (error) {
             next(error)
         }
@@ -286,7 +338,6 @@ module.exports = {
 
 
             const circle = await Circle.findOne({ circle_code: oldAdminDoc.circle })
-            console.log(circle);
             circle.members.forEach(member => {
                 var result = new Object()
                 result.userId = member._id
@@ -303,11 +354,80 @@ module.exports = {
 
             res.send({
                 isSuccessfull: true,
-                message: 'Circle Adm cin successfully updated'
+                message: 'Circle Admin successfully updated'
             })
         } catch (error) {
             next(error)
         }
-    }
+    },
+
+    deleteCircleMember: async (req, res, next) => {
+        try {
+            const targetMemberId = req.params.targetMemberId
+            if (!targetMemberId) throw createError.BadRequest()
+            const adminId = req.payload.aud
+
+            if(adminId === targetMemberId) throw createError.BadRequest()
+
+            const targetMemberDoc = await User.findOne({ _id: targetMemberId })
+            if (!targetMemberDoc) throw createError.BadRequest()
+            
+            const adminDoc = await User.findOne({ _id: adminId })
+            if (!adminDoc) throw createError.BadRequest()
+            
+            //check if they are not on same circle
+            if (adminDoc.circle !== targetMemberDoc.circle) throw createError.BadRequest()
+            
+            await User.findOneAndUpdate({ _id: targetMemberId }, { circle: na })
+            
+            const circle = await Circle.findOne({ circle_code: adminDoc.circle })
+            if (!circle) throw createError.NotFound()
+            
+            let newMembersArray = []
+            circle.members.forEach(member => {
+                var result = new Object()
+                result.userId = member._id
+                if (result.userId.equals(targetMemberDoc._id)) return
+                newMembersArray.push(member)
+            })
+            console.log(newMembersArray);
+            await Circle.findOneAndUpdate({ _id: circle._id }, { members: newMembersArray })
+            
+            res.send({
+                isSuccessfull: true,
+                message: 'user successfully removed!'
+            })
+
+
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    changeCircleAccessibility: async (req, res, next) => {
+        try {
+            const userId = req.payload.aud
+
+            const user = await User.findOne({ _id: userId })
+            if (!user) throw createError.BadRequest()
+            
+            if (user.circle === na) throw createError.BadRequest()
+            
+            const {accessFlag} = req.body
+            if (!accessFlag) throw createError.BadRequest()
+            
+            if(accessFlag === 'true')
+                await Circle.findOneAndUpdate({ circle_code: user.circle }, { accessibility: true })
+            else
+                await Circle.findOneAndUpdate({ circle_code: user.circle }, { accessibility: false })
+            res.send({
+                isSuccessfull: true,
+                message: 'circle settings successfully updated'
+            })
+
+        } catch (error) {
+            next(error)
+        }
+    },
 
 }

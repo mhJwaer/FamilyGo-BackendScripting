@@ -1,12 +1,15 @@
+
 const createError = require('http-errors')
 const User = require('../Models/User.model')
 const Circle = require('../Models/Circle.model')
 const UserLocation = require('../Models/UserLocation.model')
+const Photo = require('../Models/Photos.model')
 const { findByIdAndUpdate } = require('../Models/User.model')
 const na = 'N/A'
 // const {
 //     saveUserNameSchema
 // } = require('../helpers/validation_schema')
+
 
 
 module.exports = {
@@ -75,6 +78,26 @@ module.exports = {
     },
 
     updateAvatar: async (req, res, next) => {  
+        try {
+            const userId = req.payload.aud
+            if(!req.file ) throw createError.BadRequest('you must upload an image!')
+            const profileImage = req.file.path
+            
+            const user = await User.findById(userId)
+            if (user.photoUrl !== na) {
+                var fs = require('fs')
+                var filePath = user.photoUrl
+                fs.unlinkSync(filePath)
+            }   
+
+            await User.findOneAndUpdate({ _id: userId }, { photoUrl: profileImage })
+            res.send({
+                isSuccessfull: true,
+                message: profileImage
+            })
+        } catch (error) {
+            next(error)
+        }
     },
 
     updateMessageToken: async (req, res, next) => {

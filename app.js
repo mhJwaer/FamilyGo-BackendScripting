@@ -21,10 +21,9 @@ const userRoute = require('./Routes/User.route')
 app.use('/auth', authRoute)
 app.use('/circle', circleRoute)
 app.use('/user', userRoute)
+app.use('/uploads', express.static('uploads'));
 app.get('/', (req, res) => {
     res.send('helllo from express :)')
-    // res.send(req.payload)
-    // res.send(req.headers['authorization'])
 })
 
 
