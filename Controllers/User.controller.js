@@ -5,6 +5,7 @@ const Circle = require('../Models/Circle.model')
 const UserLocation = require('../Models/UserLocation.model')
 const Photo = require('../Models/Photos.model')
 const { findByIdAndUpdate } = require('../Models/User.model')
+
 const na = 'N/A'
 // const {
 //     saveUserNameSchema
@@ -13,6 +14,13 @@ const na = 'N/A'
 
 
 module.exports = {
+    deleteReqHeader: (req, res, next) => {
+        
+        // delete req.headers['content-type']
+        console.log(req.headers);
+        next()
+
+    },
 
     getUserDetails: async (req, res, next) => {
       try {

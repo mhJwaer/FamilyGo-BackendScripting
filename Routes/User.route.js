@@ -5,7 +5,8 @@ const {
     updateAvatar,
     getUserDetails,
     updateMessageToken,
-    setUserLocation
+    setUserLocation,
+    deleteReqHeader
 } = require('../Controllers/User.controller')
 
 const {
@@ -22,7 +23,7 @@ router.get('/', verifyAccessToken, getUserDetails)
 router.post('/save-username/:userName', verifyAccessToken, updateUserName)
 
 //set user profile picture
-router.post('/avatar', verifyAccessToken, upload.single('profileImage'), updateAvatar)
+router.post('/avatar', verifyAccessToken, deleteReqHeader, upload.single('avatar'), updateAvatar)
 
 //update messaging Token
 router.post('/message-token', verifyAccessToken, updateMessageToken)

@@ -38,7 +38,7 @@ router.patch('/admin/:targetUserId', verifyAccessToken, adminRole, changeCircleA
 router.patch('/accessibility', verifyAccessToken, adminRole, changeCircleAccessibility)
 
 //delete circle member
-router.delete('/member/:targetMemberId', verifyAccessToken, adminRole, deleteCircleMember)
+router.patch('/delete-member/:targetMemberId', verifyAccessToken, adminRole, deleteCircleMember)
 
 
 module.exports = router

@@ -168,6 +168,7 @@ module.exports = {
             if (!circle) throw createError.NotFound()
 
             const members = circle.members
+            
             res.send(members)
 
         } catch (error) {

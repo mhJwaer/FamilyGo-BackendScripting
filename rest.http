@@ -109,7 +109,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDMxODk4N
 
 
 ### delete circle member
-DELETE http://localhost:3000/circle/member/5f8ec145da1c30110c946302
+PATCH  http://localhost:3000/circle/delete-member/5f8ec145da1c30110c946302
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDMxODk4NjgsImV4cCI6MTYwMzc5NDY2OCwiYXVkIjoiNWY4ZWJjNmNkYTFjMzAxMTBjOTQ2MmZmIiwiaXNzIjoibWguandhZXJAZ21haWwuY29tIn0.f53MZsGaN8cSD71D5r6xITbNzQTGlohb_PYh1mg4-_Q
 
 
